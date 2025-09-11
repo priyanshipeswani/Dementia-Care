@@ -1,0 +1,1 @@
+# Dementia Care Backend Application

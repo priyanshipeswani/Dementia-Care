@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AccessibilityProvider } from './contexts/AccessibilityContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { LandingPage } from './pages/LandingPage';
-import { CaregiverLogin, ElderLogin } from './pages/AuthPages';
+import { CaregiverLogin, ElderLogin, CaregiverRegister } from './pages/AuthPages';
 import { CaregiverDashboard } from './pages/CaregiverDashboard';
 import { ElderInterface } from './pages/ElderInterface';
 
@@ -74,26 +75,29 @@ const themeStyles = `
 
 function App() {
   return (
-    <AccessibilityProvider>
-      <Router>
-        <div className="App">
-          <style>{themeStyles}</style>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/caregiver-login" element={<CaregiverLogin />} />
-            <Route path="/elder-login" element={<ElderLogin />} />
-            <Route path="/caregiver-dashboard" element={<CaregiverDashboard />} />
-            <Route path="/elder-interface" element={<ElderInterface />} />
-            
-            {/* Redirect legacy routes */}
-            <Route path="/login" element={<Navigate to="/caregiver-login" replace />} />
-            
-            {/* 404 redirect to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
-      </Router>
-    </AccessibilityProvider>
+    <AuthProvider>
+      <AccessibilityProvider>
+        <Router>
+          <div className="App">
+            <style>{themeStyles}</style>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/caregiver-login" element={<CaregiverLogin />} />
+              <Route path="/caregiver-register" element={<CaregiverRegister />} />
+              <Route path="/elder-login" element={<ElderLogin />} />
+              <Route path="/caregiver-dashboard" element={<CaregiverDashboard />} />
+              <Route path="/elder-interface" element={<ElderInterface />} />
+              
+              {/* Redirect legacy routes */}
+              <Route path="/login" element={<Navigate to="/caregiver-login" replace />} />
+              
+              {/* 404 redirect to home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </Router>
+      </AccessibilityProvider>
+    </AuthProvider>
   );
 }
 
