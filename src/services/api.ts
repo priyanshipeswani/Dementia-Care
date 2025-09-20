@@ -375,6 +375,16 @@ class ApiService {
 
   async getEvents(userId?: number, eventType?: string, status?: string): Promise<ApiResponse<Event[]>> {
     console.log('🔍 DEBUG: getEvents called with userId:', userId, 'eventType:', eventType, 'status:', status);
+    
+    // For synthetic data users (IDs 5, 6, 7), use demo endpoint
+    if (userId && [5, 6, 7].includes(userId)) {
+      const endpoint = `/api/demo/events/${userId}`;
+      console.log('🔍 DEBUG: Using demo events endpoint:', endpoint);
+      const result = await this.request<Event[]>(endpoint);
+      console.log('🔍 DEBUG: getEvents result:', result);
+      return result;
+    }
+    
     const params = new URLSearchParams();
     if (userId) params.append('user_id', userId.toString());
     if (eventType) params.append('event_type', eventType);
@@ -428,6 +438,16 @@ class ApiService {
   // Family Member methods
   async getFamilyMembers(userId?: number): Promise<ApiResponse<FamilyMember[]>> {
     console.log('🔍 DEBUG: getFamilyMembers called with userId:', userId);
+    
+    // For synthetic data users (IDs 5, 6, 7), use demo endpoint
+    if (userId && [5, 6, 7].includes(userId)) {
+      const url = `/api/demo/family-members/${userId}`;
+      console.log('🔍 DEBUG: Using demo endpoint:', url);
+      const result = await this.request<FamilyMember[]>(url);
+      console.log('🔍 DEBUG: getFamilyMembers result:', result);
+      return result;
+    }
+    
     const params = userId ? `?user_id=${userId}` : '';
     const url = `/api/family-members/${params}`;
     console.log('🔍 DEBUG: getFamilyMembers URL:', url);
@@ -462,6 +482,26 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  // Voice Query API
+  async processVoiceQuery(query: string, context?: string): Promise<ApiResponse<VoiceQueryResponse>> {
+    return this.request<VoiceQueryResponse>('/api/knowledge/query', {
+      method: 'POST',
+      body: JSON.stringify({
+        query,
+        context
+      })
+    });
+  }
+}
+
+export interface VoiceQueryResponse {
+  success: boolean;
+  message: string;
+  answer?: string;
+  humanized_response?: string;
+  details?: any;
+  suggestions?: string[];
 }
 
 export const apiService = new ApiService();

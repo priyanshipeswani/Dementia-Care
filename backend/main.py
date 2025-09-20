@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, photos
+from app.routers import auth, photos, knowledge_graph
 import uvicorn
 
 # Create FastAPI instance
@@ -22,6 +22,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(photos.router, prefix="/api/photos", tags=["photos"])
+app.include_router(knowledge_graph.router, prefix="/api", tags=["knowledge"])
 
 # Root endpoint
 @app.get("/")

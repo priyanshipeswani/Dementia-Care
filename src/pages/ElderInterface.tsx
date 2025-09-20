@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Users, Calendar, Phone, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { VoiceButton } from '../components/ui/VoiceButton';
+import { VoiceAssistant } from '../components/ui/VoiceAssistant';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { useAccessibility } from '../contexts/AccessibilityContext';
@@ -15,8 +15,6 @@ export function ElderInterface() {
   const { user, isAuthenticated, isLoading } = useAuth();
   console.log('ElderInterface: Auth state - user:', user, 'isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
   
-  const [isListening, setIsListening] = useState(false);
-  const [currentResponse, setCurrentResponse] = useState('');
   const [showFamilyPhotos, setShowFamilyPhotos] = useState(false);
   const [showTodaysTasks, setShowTodaysTasks] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -84,26 +82,13 @@ export function ElderInterface() {
     fetchData();
   }, [user]);
 
-  // Simulate voice interaction
-  const handleVoiceToggle = () => {
-    if (isListening) {
-      // Stop listening
-      setIsListening(false);
-      // Simulate processing and response
-      setTimeout(() => {
-        const responses = [
-          "That's Sarah, your daughter. She visits you every Sunday and loves gardening with you.",
-          "Today is Thursday. You might want to water the plants and Sarah said she'll call around 3 PM.",
-          "Your son Michael's phone number is (555) 987-6543. He usually calls you on Tuesday evenings.",
-          "Emma Rose is your granddaughter. She's 8 years old and loves playing board games and drawing with you."
-        ];
-        setCurrentResponse(responses[Math.floor(Math.random() * responses.length)]);
-      }, 2000);
-    } else {
-      // Start listening
-      setIsListening(true);
-      setCurrentResponse('');
-    }
+  // Voice interaction handlers
+  const handleQueryReceived = (query: string) => {
+    console.log('Voice query received:', query);
+  };
+
+  const handleResponseReceived = (response: string) => {
+    console.log('Voice response received:', response);
   };
 
   // Show loading while checking authentication
@@ -184,30 +169,12 @@ export function ElderInterface() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <VoiceButton
-              isListening={isListening}
-              onToggleListening={handleVoiceToggle}
+            <VoiceAssistant
+              onQueryReceived={handleQueryReceived}
+              onResponseReceived={handleResponseReceived}
             />
           </motion.div>
         </div>
-
-        {/* Response display */}
-        <AnimatePresence>
-          {currentResponse && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-8"
-            >
-              <Card className="p-8 bg-blue-50 border-2 border-blue-200">
-                <p className="text-2xl text-gray-800 leading-relaxed text-center">
-                  {currentResponse}
-                </p>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Family photos carousel */}
         <AnimatePresence>
